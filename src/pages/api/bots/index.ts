@@ -40,7 +40,7 @@ export default async function handler(
         return res.json({
           error: "Description must be at least 200 characters long!",
           status: "error",
-          code: 401,
+          code: 400,
         });
       }
 
