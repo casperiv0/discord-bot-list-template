@@ -36,6 +36,13 @@ export default async function handler(
           code: 401,
         });
       }
+      if (description.length < 200) {
+        return res.json({
+          error: "Description must be at least 200 characters long!",
+          status: "error",
+          code: 400,
+        });
+      }
 
       const user = UserModel.findById(req.user._id);
 
@@ -59,7 +66,11 @@ export default async function handler(
       break;
     }
     default: {
-      return res.json({ error: "Method not allowed", code: 405, status: "error" });
+      return res.json({
+        error: "Method not allowed",
+        code: 405,
+        status: "error",
+      });
     }
   }
 }
