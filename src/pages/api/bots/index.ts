@@ -3,6 +3,7 @@ import ApiRequest from "../../../interfaces/ApiRequest";
 import BotModel from "../../../models/Bot.model";
 import UserModel from "../../../models/User.model";
 import checkAuth from "../../../utils/checkAuth";
+import connectDb from "../../../utils/database";
 
 export default async function handler(
   req: ApiRequest,
@@ -10,12 +11,14 @@ export default async function handler(
 ): Promise<void | NextApiResponse> {
   const { method } = req;
 
+  await connectDb();
+
   switch (method) {
     case "POST": {
       try {
         await checkAuth(req);
       } catch (e) {
-        return res.redirect("/api/auth/login");
+        return res.json(e);
       }
 
       const {
@@ -29,15 +32,15 @@ export default async function handler(
         botInviteUrl,
       } = req.body;
 
-      if (!botId || !prefix || !description) {
+      if (!botId || !prefix || !description || !botInviteUrl) {
         return res.json({
-          error: "Must provide `botId`, `prefix` and `description`",
+          error: "Must provide `botId`, `prefix`, `botInviteUrl` and `description`",
           status: "error",
           code: 401,
         });
       }
 
-      const user = UserModel.findById(req.user._id);
+      const user = await UserModel.findOne({ user_id: req.user._id });
 
       if (!user) {
         return res.redirect("/api/auth/login");
@@ -52,11 +55,11 @@ export default async function handler(
         github_url: githubUrl,
         bot_invite_url: botInviteUrl,
         support_invite: supportInvite,
-        uploaded_by: user,
+        user_id: user?._id,
       });
 
       await newBot.save();
-      break;
+      return res.json({ status: "success", bot: newBot });
     }
     default: {
       return res.json({ error: "Method not allowed", code: 405, status: "error" });

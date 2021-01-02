@@ -1,5 +1,4 @@
 import { models, model, Schema, Document } from "mongoose";
-import User from "../interfaces/User";
 
 interface IBot extends Document {
   name: string;
@@ -11,14 +10,14 @@ interface IBot extends Document {
   github_url: string | null;
   support_invite: string | null;
   bot_invite_url: string;
-  uploaded_by: User;
+  user_id: string;
   created_at: number;
 }
 
 const BotSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    default: "soon",
   },
   client_id: {
     type: String,
@@ -49,9 +48,8 @@ const BotSchema = new Schema({
     type: String,
     default: null,
   },
-  uploaded_by: {
-    type: Object,
-    ref: "User",
+  user_id: {
+    type: String,
     required: true,
   },
   created_at: {

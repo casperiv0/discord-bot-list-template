@@ -1,9 +1,10 @@
 import { connect } from "mongoose";
 
-export default async function connectDb() {
+export default async function connectDb(): Promise<void> {
   const MONGODB_URI = process.env["MONGODB_URI"];
   try {
-    await connect(MONGODB_URI, {
+    await connect(`${MONGODB_URI}`, {
+      useCreateIndex: true,
       useFindAndModify: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
