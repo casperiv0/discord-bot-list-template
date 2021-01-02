@@ -8,12 +8,10 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:import/errors",
-    "plugin:import/warnings",
     "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended"
   ],
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -24,7 +22,8 @@
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "react/display-name": 1
+    "react/display-name": 1,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
   },
   "settings": {
     "react": {

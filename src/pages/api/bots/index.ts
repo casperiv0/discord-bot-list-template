@@ -2,12 +2,22 @@ import { NextApiResponse } from "next";
 import ApiRequest from "../../../interfaces/ApiRequest";
 import BotModel from "../../../models/Bot.model";
 import UserModel from "../../../models/User.model";
+import checkAuth from "../../../utils/checkAuth";
 
-export default async function handler(req: ApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: ApiRequest,
+  res: NextApiResponse
+): Promise<void | NextApiResponse> {
   const { method } = req;
 
   switch (method) {
     case "POST": {
+      try {
+        await checkAuth(req);
+      } catch (e) {
+        return res.redirect("/api/auth/login");
+      }
+
       const {
         botId,
         prefix,
@@ -46,6 +56,7 @@ export default async function handler(req: ApiRequest, res: NextApiResponse) {
       });
 
       await newBot.save();
+      break;
     }
     default: {
       return res.json({ error: "Method not allowed", code: 405, status: "error" });

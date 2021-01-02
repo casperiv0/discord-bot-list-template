@@ -3,15 +3,21 @@ import jwt from "jsonwebtoken";
 import { setCookie } from "nookies";
 import { NextApiRequest, NextApiResponse } from "next";
 import UserModel from "../../../models/User.model";
+import connectDb from "../../../utils/database";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<void | NextApiResponse> {
+  await connectDb();
+
   const { query } = req;
   const DISCORD_CLIENT_ID = process.env["DISCORD_CLIENT_ID"];
   const DISCORD_CLIENT_SECRET = process.env["DISCORD_CLIENT_SECRET"];
   const DISCORD_CALLBACK_URL = process.env["DISCORD_CALLBACK_URL"];
   const JWT_SECRET = process.env["JWT_SECRET"];
 
-  const code = query.code;
+  const { code } = query as { code: string };
 
   if (!code) {
     return res.json({ error: "No code was provided", status: "error" });
@@ -65,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.redirect("/");
 }
 
-function encode(obj: object) {
+function encode(obj: { [key: string]: string }) {
   let string = "";
 
   for (const [key, value] of Object.entries(obj)) {

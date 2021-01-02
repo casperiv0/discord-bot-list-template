@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import BotModel from "../../../models/Bot.model";
 import connectDb from "../../../utils/database";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<void | NextApiResponse> {
   const { method, query } = req;
 
   await connectDb();
